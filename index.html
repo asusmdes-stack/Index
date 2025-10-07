@@ -1,20 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Моё Telegram Mini App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
   <h1>Привет, <span id="user-name"></span>!</h1>
+
   <script>
+    // Ждём готовности Telegram WebApp
     Telegram.WebApp.ready();
 
-    const user = Telegram.WebApp.initDataUnsafe.user;
+    // Получаем данные пользователя
+    const user = Telegram.WebApp.initDataUnsafe?.user;
     const initData = Telegram.WebApp.initData;
 
-    if (user && initData) {
-      document.getElementById('user-name').innerText = user.first_name;
+    console.log("=== Telegram WebApp Debug ===");
+    console.log("User object:", user);
+    console.log("Init data:", initData);
 
+    // Проверяем, доступны ли данные
+    if (user && initData) {
+      document.getElementById('user-name').innerText = user.first_name || 'Гость';
+
+      console.log('Отправляем данные пользователя на сервер...', {
+        userId: user.id,
+        firstName: user.first_name
+      });
+
+      // Отправляем запрос на сервер
       fetch('https://telega-ten-wheat.vercel.app/api/save-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -23,7 +38,25 @@
           userId: user.id,
           firstName: user.first_name
         })
-      });
+      })
+        .then(async res => {
+          console.log("Ответ сервера (статус):", res.status);
+          const data = await res.json().catch(() => ({}));
+          console.log("Ответ сервера (JSON):", data);
+
+          if (res.ok) {
+            console.log("✅ Данные успешно отправлены на сервер!");
+          } else {
+            console.error("⚠️ Ошибка от сервера:", data.error || "Неизвестная ошибка");
+          }
+        })
+        .catch(err => {
+          console.error("❌ Ошибка при отправке fetch:", err);
+        });
+
+    } else {
+      console.warn("⚠️ Нет данных Telegram WebApp. Скорее всего, страница открыта вне Telegram.");
+      document.getElementById('user-name').innerText = "Гость (вне Telegram)";
     }
   </script>
 </body>
