@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Моё Telegram Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <h1>Привет, <span id="user-name"></span>!</h1>
+  <script>
+    Telegram.WebApp.ready();
+    const user = Telegram.WebApp.initDataUnsafe.user;
+    if (user) {
+      document.getElementById('user-name').innerText = user.first_name;
+      fetch('https://telega-ten-wheat.vercel.app/api/save-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          initData: Telegram.WebApp.initData,
+          userId: user.id,
+          firstName: user.first_name
+        })
+      });
+    }
+  </script>
+</body>
+</html>
