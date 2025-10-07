@@ -8,14 +8,18 @@
   <h1>Привет, <span id="user-name"></span>!</h1>
   <script>
     Telegram.WebApp.ready();
+
     const user = Telegram.WebApp.initDataUnsafe.user;
-    if (user) {
+    const initData = Telegram.WebApp.initData;
+
+    if (user && initData) {
       document.getElementById('user-name').innerText = user.first_name;
+
       fetch('https://telega-ten-wheat.vercel.app/api/save-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          initData: Telegram.WebApp.initData,
+          initData: initData,
           userId: user.id,
           firstName: user.first_name
         })
