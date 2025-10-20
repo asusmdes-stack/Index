@@ -5,7 +5,7 @@ tg.expand(); // Fullscreen
 const payButton = document.getElementById('payButton');
 const status = document.getElementById('status');
 
-const BOT_WEBHOOK_URL = 'https://bot-server.vercel.app/api/create_invoice';  // Эндпоинт бота для инвойса (добавь в bot-server)
+const BOT_WEBHOOK_URL = 'https://telega-kr9e.vercel.app/api/webhook';  // Эндпоинт бота для инвойса (добавь в bot-server)
 
 payButton.addEventListener('click', async () => {
     status.textContent = 'Генерируем инвойс...';
