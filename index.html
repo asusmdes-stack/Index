@@ -58,23 +58,6 @@
             text-shadow: 0 0 20px #ff0000;
         }
 
-        .stars-btn {
-            background: linear-gradient(45deg, #ff0000, #ff4444);
-            color: #fff;
-            border: 2px solid #ff0000;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 20px #ff0000;
-            transition: all 0.3s;
-        }
-
-        .stars-btn:hover {
-            box-shadow: 0 0 30px #ff0000, 0 0 40px #ff0000;
-            transform: scale(1.05);
-        }
-
         .main-content {
             flex: 1;
             display: flex;
@@ -201,91 +184,6 @@
             cursor: pointer;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
         }
-
-        /* 🆕 ПОПАП ДЛЯ ССЫЛКИ */
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .popup-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .popup-content {
-            background: linear-gradient(135deg, #1a0000, #330000);
-            border: 2px solid #ff0000;
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 350px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 0 50px #ff0000;
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-        }
-
-        .popup-overlay.active .popup-content {
-            transform: scale(1);
-        }
-
-        .popup-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            filter: drop-shadow(0 0 20px #ff0000);
-        }
-
-        .popup-title {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #ff0000, #ff4444);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .popup-text {
-            color: #ffcccc;
-            margin-bottom: 1.5rem;
-            line-height: 1.4;
-        }
-
-        .close-btn {
-            background: linear-gradient(45deg, #ff4444, #ff6666);
-            color: #fff;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
-            transition: all 0.3s;
-            width: 100%;
-            margin-bottom: 0.5rem;
-        }
-
-        .close-btn:hover {
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
-            transform: scale(1.02);
-        }
-
-        .cancel-btn {
-            background: rgba(255,0,0,0.2);
-            color: #fff;
-            border: 1px solid #ff0000;
-            width: 100%;
-        }
     </style>
 </head>
 <body>
@@ -297,7 +195,6 @@
         <!-- НАВИГАЦИЯ -->
         <nav class="navbar">
             <h1>🌸 САКУРА СУДЬБЫ</h1>
-            <button id="starsBtn" class="stars-btn">⭐ 10 Stars</button>
         </nav>
 
         <!-- ФОРМА -->
@@ -305,9 +202,7 @@
             <div class="sakura-icon">🌸</div>
             <h2 class="title">Раскрой лепестки судьбы</h2>
             <input type="text" id="question" placeholder="Что волнует душу?..." maxlength="50">
-            
-            <!-- 🆕 КНОПКА ЗАМЕНИЛА ССЫЛКУ -->
-            <button id="donateBtn" class="gadanie-btn">🔴 РАСКРЫТЬ САКУРУ</button>
+            <button id="payBtn" class="gadanie-btn">🔴 РАСКРЫТЬ САКУРУ (10 ⭐)</button>
             
             <!-- РЕЗУЛЬТАТ -->
             <div id="result" class="result hidden">
@@ -320,21 +215,9 @@
         </main>
     </div>
 
-    <!-- 🆕 ПОПАП ДЛЯ ДЕЙТА -->
-    <div id="donatePopup" class="popup-overlay">
-        <div class="popup-content">
-            <div class="popup-icon">🌸</div>
-            <h3 class="popup-title">Поддержи Сакуру!</h3>
-            <p class="popup-text">10 Stars = 1 Гадание<br>Раскрой лепестки судьбы!</p>
-            <button class="close-btn" onclick="openDonateLink()">⭐ ОПЛАТИТЬ 10 STARS</button>
-            <button class="close-btn cancel-btn" onclick="closePopup()">❌ Отмена</button>
-        </div>
-    </div>
-
     <!-- JS INLINE -->
     <script>
-        // ВЕСЬ JS INLINE!
-        // ИНИЦИАЛИЗАЦИЯ
+        // ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
 
@@ -352,21 +235,16 @@
         function drawMatrix() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
             ctx.fillStyle = '#ff0000';
             ctx.font = fontSize + 'px monospace';
             
             drops.forEach((y, i) => {
                 const text = matrix[Math.floor(Math.random() * matrix.length)];
                 ctx.fillText(text, i * fontSize, y * fontSize);
-                
-                if (y * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
+                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             });
         }
-
         setInterval(drawMatrix, 50);
 
         // 6 ЦВЕТОВ САКУРЫ
@@ -384,50 +262,47 @@
             const love = ['любовь', 'парень', 'девушка', 'чувства', 'отношения'];
             const money = ['деньги', 'работа', 'карьера', 'бизнес'];
             const health = ['здоровье', 'болезнь', 'энергия'];
-            
             if (love.some(w => question.toLowerCase().includes(w))) return 1;
             if (money.some(w => question.toLowerCase().includes(w))) return 4;
             if (health.some(w => question.toLowerCase().includes(w))) return 5;
             return Math.floor(Math.random() * 6);
         }
 
-        // 🆕 ФУНКЦИИ ПОПАПА
-        function showPopup() {
-            document.getElementById('donatePopup').classList.add('active');
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-        }
-
-        function closePopup() {
-            document.getElementById('donatePopup').classList.remove('active');
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-        }
-
-        function openDonateLink() {
-            closePopup();
-            window.Telegram.WebApp.openTelegramLink('https://t.me/ExpresRoBot?start=donate');
-        }
-
-        // 🆕 КНОПКА ГАДАНИЯ - ПОКАЗЫВАЕТ ПОПАП
-        document.getElementById('donateBtn').onclick = () => {
+        // 🔥 ОПЛАТА 10 STARS ПРЯМО В WEBAPP
+        document.getElementById('payBtn').onclick = () => {
             const question = document.getElementById('question').value.trim();
             if (!question) {
                 alert('❓ Задай вопрос!');
                 return;
             }
-            showPopup(); // ПОКАЗЫВАЕМ ПОПАП
+
+            // ✅ ОТКРЫВАЕМ ОКНО ОПЛАТЫ TELEGRAM STARS
+            window.Telegram.WebApp.showInvoice({
+                title: '🌸 Сакура Судьбы',
+                description: 'Раскрой лепестки своей судьбы',
+                payload: `sakura|${window.Telegram.WebApp.initDataUnsafe.user.id}|sakura_app`,
+                provider_token: '',  // Пусто для Stars
+                currency: 'XTR',
+                prices: [{ label: 'Гадание Сакурой', amount: 10 }],
+                start_parameter: 'sakura-payment',
+                theme_params: {
+                    color_primary: '#ff0000',
+                    color_secondary: '#ff4444',
+                    color_background: '#000000',
+                    color_text: '#ffffff'
+                }
+            });
         };
 
-        // 🆕 ЗАКРЫТИЕ ПОПАПА КЛИКОМ НА ФОН
-        document.getElementById('donatePopup').onclick = (e) => {
-            if (e.target.id === 'donatePopup') closePopup();
-        };
+        // ✅ УСПЕШНАЯ ОПЛАТА - ПОЛУЧАЕМ РЕЗУЛЬТАТ
+        window.Telegram.WebApp.onEvent('invoiceClosed', function(data) {
+            if (data.status === 'paid') {
+                const question = document.getElementById('question').value.trim();
+                showSakuraResult(question);
+            }
+        });
 
-        // STARS КНОПКА
-        document.getElementById('starsBtn').onclick = () => {
-            window.Telegram.WebApp.openTelegramLink('https://t.me/ExpresRoBot?^pay_=donate');
-        };
-
-        // SHOW RESULT (после оплаты - вручную вызывается или через webhook)
+        // ✅ ПОКАЗ РЕЗУЛЬТАТА
         function showSakuraResult(question) {
             const colorIndex = analyzeQuestion(question);
             const color = sakuraColors[colorIndex];
@@ -436,9 +311,11 @@
             document.getElementById('colorName').textContent = color.name;
             document.getElementById('poem').textContent = color.poem;
             document.getElementById('advice').textContent = color.advice;
+            document.getElementById('payBtn').style.display = 'none';  // СКРЫВАЕМ КНОПКУ ОПЛАТЫ
             document.getElementById('result').classList.remove('hidden');
             
             window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            window.Telegram.WebApp.showAlert('🌸 Ваша Сакура раскрыта!');
         }
 
         // SHARE
@@ -448,9 +325,10 @@
             const poem = document.getElementById('poem').textContent;
             const text = `🌸 Моя Сакура Судьбы: ${colorName}\n"${poem}"\n\nПопробуй своё! t.me/${user.username}`;
             
-            window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(window.Telegram.WebApp.initDataUnsafe.start_param)}&text=${encodeURIComponent(text)}`);
+            window.Telegram.WebApp.openTelegramLink(
+                `https://t.me/share/url?url=&text=${encodeURIComponent(text)}`
+            );
         }
     </script>
 </body>
 </html>
-
