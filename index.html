@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 Сакура Судьбы</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="css/sakura.css">
+</head>
+<body>
+    <!-- НЕОН МАТРИЦА ФОН -->
+    <canvas id="matrix"></canvas>
+
+    <!-- ГЛАВНЫЙ КОНТЕЙНЕР -->
+    <div class="sakura-container">
+        <!-- НАВИГАЦИЯ -->
+        <nav class="navbar">
+            <h1>🌸 САКУРА СУДЬБЫ</h1>
+            <button id="starsBtn" class="stars-btn">⭐ 10 Stars</button>
+        </nav>
+
+        <!-- ФОРМА -->
+        <main class="main-content">
+            <div class="sakura-icon">🌸</div>
+            <h2 class="title">Раскрой лепестки судьбы</h2>
+            <input type="text" id="question" placeholder="Что волнует душу?..." maxlength="50">
+            <button id="gadanieBtn" class="gadanie-btn">🔴 РАСКРЫТЬ САКУРУ</button>
+            
+            <!-- РЕЗУЛЬТАТ -->
+            <div id="result" class="result hidden">
+                <div id="sakuraColor" class="sakura-color"></div>
+                <h3 id="colorName"></h3>
+                <p id="poem"></p>
+                <p id="advice"></p>
+                <button onclick="shareResult()" class="share-btn">📱 Поделиться</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- JS -->
+    <script src="js/sakura.js"></script>
+</body>
+</html>
