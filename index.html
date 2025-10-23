@@ -283,7 +283,7 @@ document.getElementById('payBtn').onclick = async () => {
 
     try {
         // 📨 Запрашиваем ссылку счета у твоего бота на Render
-        const response = await fetch('https://t.me/ExpresRoBot/invoice', {
+        const response = await fetch('https://telega-6jtc.onrender.com/api/invoice', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -343,5 +343,6 @@ function shareResult() {
 
 </body>
 </html>
+
 
 
