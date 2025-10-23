@@ -267,52 +267,60 @@ function analyzeQuestion(question) {
     return Math.floor(Math.random() * 6);
 }
 
-// 🌸 ОПЛАТА 10 Stars
+
+// 🌸 ОПЛАТА 10 Stars (ФИКС!)
 document.getElementById('payBtn').onclick = async () => {
     const question = document.getElementById('question').value.trim();
     if (!question) {
-        alert('❓ Задай вопрос!');
+        window.Telegram.WebApp.showAlert('❓ Задай вопрос!');
         return;
     }
 
-    const user = window.Telegram.WebApp.initDataUnsafe.user;
-    if (!user) {
-        alert('⚠️ Не удалось определить пользователя Telegram.');
-        return;
-    }
+    document.getElementById('payBtn').textContent = '🌸 Создаю счёт...';
+    document.getElementById('payBtn').disabled = true;
 
     try {
-        // 📨 Запрашиваем ссылку счета у твоего бота на Render
+        // ✅ API CALL К БОТУ
         const response = await fetch('https://telega-6jtc.onrender.com/api/invoice', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                user_id: user.id,
+                user_id: window.Telegram.WebApp.initDataUnsafe.user.id,
                 question: question
             })
         });
 
         const data = await response.json();
-        if (data.ok && data.invoice_link) {
-            // ✅ Показываем окно оплаты Stars
-            window.Telegram.WebApp.openInvoice(data.invoice_link);
+        
+        if (data.ok) {
+            // ✅ ОТКРЫВАЕМ STARS POPUP!
+            window.Telegram.WebApp.openInvoice(
+                'sakura|' + window.Telegram.WebApp.initDataUnsafe.user.id + '|sakura_app',
+                (status) => {
+                    if (status === 'paid') {
+                        showSakuraResult(question);
+                        window.Telegram.WebApp.showAlert('🌸 Сакура раскрыта!');
+                    } else {
+                        window.Telegram.WebApp.showAlert('❌ Оплата отменена');
+                        document.getElementById('payBtn').textContent = '🔴 РАСКРЫТЬ САКУРУ (10 ⭐)';
+                        document.getElementById('payBtn').disabled = false;
+                    }
+                }
+            );
         } else {
-            alert('Ошибка при создании счёта: ' + (data.error || 'неизвестно'));
+            window.Telegram.WebApp.showAlert('❌ Ошибка создания счёта');
         }
     } catch (err) {
         console.error(err);
-        alert('Ошибка соединения с сервером.');
+        window.Telegram.WebApp.showAlert('❌ Ошибка соединения');
+    } finally {
+        document.getElementById('payBtn').disabled = false;
     }
 };
 
-// 🌸 После успешной оплаты
-window.Telegram.WebApp.onEvent('invoiceClosed', (data) => {
-    if (data.status === 'paid') {
-        const question = document.getElementById('question').value.trim();
-        showSakuraResult(question);
-    }
-});
 
+
+       
 // 🌸 Показ результата
 function showSakuraResult(question) {
     const colorIndex = analyzeQuestion(question);
@@ -343,6 +351,7 @@ function shareResult() {
 
 </body>
 </html>
+
 
 
 
