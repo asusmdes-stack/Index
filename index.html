@@ -14,19 +14,28 @@
 
     document.getElementById("payBtn").addEventListener("click", async () => {
       const user_id = tg.initDataUnsafe?.user?.id;
-      if (!user_id) return alert("Ошибка: не найден user_id");
+      const initData = tg.initData; // <-- вот это важно
 
-      const res = await fetch("/api/invoice", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id }),
-      });
+      if (!user_id) {
+        tg.showAlert("Ошибка: Telegram не передал user_id");
+        return;
+      }
 
-      const data = await res.json();
-      if (data.status === "ok") {
-        tg.showAlert("Инвойс отправлен прямо в Telegram!");
-      } else {
-        tg.showAlert("Ошибка: " + (data.error || "не удалось создать инвойс"));
+      try {
+        const res = await fetch("/api/invoice", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id, init_data: initData }),
+        });
+
+        const data = await res.json();
+        if (data.status === "ok") {
+          tg.showAlert("Инвойс создан прямо в Mini App!");
+        } else {
+          tg.showAlert("Ошибка: " + (data.error || "не удалось создать инвойс"));
+        }
+      } catch (err) {
+        tg.showAlert("Ошибка соединения: " + err.message);
       }
     });
   </script>
