@@ -1,22 +1,33 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
-
-  const { user_id, init_data } = req.body;
-  if (!user_id) return res.status(400).json({ error: "Missing user_id" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
   try {
-    const botUrl = "https://telega-6jtc.onrender.com/create_invoice";
+    const { user_id } = req.body;
+    if (!user_id) {
+      return res.status(400).json({ error: "Missing user_id" });
+    }
 
-    const response = await fetch(botUrl, {
+    // Отправляем запрос на Render
+    const response = await fetch("https://telega-6jtc.onrender.com/create_invoice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id, init_data }),
+      body: JSON.stringify({ user_id }),
     });
 
-    const result = await response.json();
-    res.status(200).json(result);
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      return res.status(500).json({
+        error: "Render error",
+        details: data,
+      });
+    }
+
+    return res.status(200).json({ status: "ok" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to contact bot" });
+    console.error("Invoice API error:", err);
+    return res.status(500).json({ error: "Server error" });
   }
 }
